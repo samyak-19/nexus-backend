@@ -3,36 +3,65 @@ import prisma from "../utils/prisma.js";
 
 // CREATE COMMUNITY
 export const createCommunity = async (req, res) => {
+
   try {
 
-    const { name } = req.body;
+    const {
+      name,
+      description,
+    } = req.body;
 
-    if (!name) {
+
+
+
+
+    if (!name || !description) {
+
       return res.status(400).json({
         success: false,
-        message: "Community name is required",
+        message: "All fields are required",
       });
     }
 
+
+
+
+
     const existingCommunity = await prisma.community.findUnique({
+
       where: {
         slug: name.toLowerCase(),
       },
     });
 
+
+
+
+
     if (existingCommunity) {
+
       return res.status(400).json({
         success: false,
         message: "Community already exists",
       });
     }
 
+
+
+
+
     const community = await prisma.community.create({
+
       data: {
         name,
         slug: name.toLowerCase(),
+        description,
       },
     });
+
+
+
+
 
     res.status(201).json({
       success: true,
